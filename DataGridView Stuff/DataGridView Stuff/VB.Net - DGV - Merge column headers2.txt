@@ -1,0 +1,90 @@
+Private Class TableData
+        Public Property col1 As String
+        Public Property col2 As String
+        Public Property col3 As String
+        Public Property col4 As String
+        Public Property col5 As String
+    End Class
+
+    Private tData As List(Of TableData)
+    Private Sub Form1_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+        tData = New List(Of TableData)
+        With DataGridView1
+            .AutoGenerateColumns = False
+            .Columns.Add("Title1", "Col1")
+            .Columns.Add("Title1", "Col2")
+            .Columns.Add("Title2", "Col3")
+            .Columns.Add("Title2", "Col4")
+            .Columns.Add("Title2", "Col5")
+            For i = 1 To 5
+                tData.Add(New TableData With {.col1 = "a", .col2 = "b", .col3 = "c", .col4 = "d", .col5 = "e"})
+                .Columns(i - 1).DataPropertyName = "col" & i
+            Next
+            .DataSource = tData
+            .ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing
+            .ColumnHeadersHeight *= 2
+            .ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.BottomCenter
+        End With
+    End Sub
+
+    Private Sub DataGridView1_CellPainting(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewCellPaintingEventArgs) Handles DataGridView1.CellPainting
+        If e.RowIndex = -1 AndAlso e.ColumnIndex > -1 Then
+            Dim r = e.CellBounds
+            r.Y += e.CellBounds.Height / 2
+            r.Height = e.CellBounds.Height / 2
+            e.PaintBackground(r, True)
+            e.PaintContent(r)
+            e.Handled = True
+        End If
+    End Sub
+
+    Private Sub DataGridView1_ColumnWidthChanged(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewColumnEventArgs) Handles DataGridView1.ColumnWidthChanged
+        RefreshTop()
+    End Sub
+
+    Private Sub DataGridView1_Scroll(ByVal sender As Object, ByVal e As System.Windows.Forms.ScrollEventArgs) Handles DataGridView1.Scroll
+        RefreshTop()
+    End Sub
+
+    Private Sub RefreshTop()
+        With DataGridView1
+            Dim rtTop = .DisplayRectangle
+            rtTop.Height = .ColumnHeadersHeight / 2
+            .Invalidate(rtTop)
+        End With
+    End Sub
+
+    Private Sub DataGridView1_Paint(ByVal sender As Object, ByVal e As System.Windows.Forms.PaintEventArgs) Handles DataGridView1.Paint
+        With DataGridView1
+            Dim colName = .Columns(0).Name, w As Integer
+            Dim r = .GetCellDisplayRectangle(0, -1, True)
+            Dim x = r.Left
+            For Each c As DataGridViewColumn In .Columns
+                r = DataGridView1.GetCellDisplayRectangle(c.Index, -1, True)
+                If c.Name = colName Then
+                    w += r.Width
+                Else
+                    DrawTitle(e.Graphics, r, w, x, colName)
+                    colName = c.Name
+                    x = r.Left
+                    w = r.Width
+                End If
+            Next
+            DrawTitle(e.Graphics, r, w, x, colName)
+        End With
+    End Sub
+
+    Private Sub DrawTitle(g As Graphics, r As Rectangle, w As Integer, x As Integer, title As String)
+        With DataGridView1
+            r.X = x + 1
+            r.Y += 1
+            r.Width = w - 2
+            r.Height = r.Height / 2 - 2
+            g.FillRectangle(New SolidBrush(.ColumnHeadersDefaultCellStyle.BackColor), r)
+            Dim format As New StringFormat()
+            format.Alignment = StringAlignment.Center
+            format.LineAlignment = StringAlignment.Center
+            g.DrawString(title, .ColumnHeadersDefaultCellStyle.Font, New SolidBrush(.ColumnHeadersDefaultCellStyle.ForeColor), r, format)
+            g.DrawLine(Pens.Black, r.Left, r.Bottom, r.Right, r.Bottom)
+        End With
+    End Sub

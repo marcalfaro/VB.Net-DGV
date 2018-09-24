@@ -1,0 +1,53 @@
+#Region " Destroy the painted icon on DGV button "
+    <System.Runtime.InteropServices.DllImportAttribute("user32.dll")>
+    Private Shared Function DestroyIcon(ByVal handle As IntPtr) As Boolean
+    End Function
+#End Region
+
+
+    Private Sub dgvEmail_CellPainting(sender As Object, e As DataGridViewCellPaintingEventArgs) Handles dgvEmail.CellPainting
+        If e.ColumnIndex = 1 Then
+            Try
+                Dim rec As Rectangle = e.CellBounds
+                rec.X = rec.X + 5
+                e.Paint(rec, DataGridViewPaintParts.All)
+                Dim bmpFind As Bitmap = Nothing
+                If e.RowIndex = -1 Then
+                    bmpFind = My.Resources.Preview
+                Else
+                    bmpFind = My.Resources.eye
+                End If
+
+                Dim ico As Icon = Icon.FromHandle(bmpFind.GetHicon)
+                e.Graphics.DrawIcon(ico, e.CellBounds.Left + 3, e.CellBounds.Top + 3)
+                DestroyIcon(ico.Handle)
+
+                e.Handled = True
+            Catch ex As Exception
+                Console.WriteLine(ex.Message)
+            End Try
+        End If
+    End Sub
+
+
+            With dgvEmail
+                Try
+                    .DataSource = Nothing
+                    .Rows.Clear()
+                    .Columns.Clear()
+                    .DataSource = dt
+
+                        Dim btn As New DataGridViewButtonColumn()
+                        .Columns.Insert(1, btn)
+                        btn.HeaderText = ""
+                        btn.Text = ""
+                        btn.Name = "colPreview"
+                        btn.Width = 25
+                        btn.Resizable = DataGridViewTriState.False
+                        'btn.UseColumnTextForButtonValue = True
+
+                Catch ex As Exception
+                    Console.WriteLine(ex.Message)
+                    LOG_ERROR("DisplayDataTable()", ex.Message)
+                End Try
+            End With

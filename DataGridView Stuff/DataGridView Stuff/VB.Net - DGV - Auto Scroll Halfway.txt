@@ -1,0 +1,17 @@
+                            If _AutoScroll Then
+                                'dgv.FirstDisplayedScrollingRowIndex = rIndex
+                                dgv.ClearSelection()
+                                dgv.Rows(rIndex).Selected = True
+                                DGV_ScrollHalfway(dgv)
+                            End If
+
+    Private Sub DGV_ScrollHalfway(ByRef oDgv As DataGridView)
+        Dim halfWay As Integer = (oDgv.DisplayedRowCount(False) / 2)
+
+        If oDgv.FirstDisplayedScrollingRowIndex + halfWay > oDgv.SelectedRows(0).Index _
+            OrElse (oDgv.FirstDisplayedScrollingRowIndex + oDgv.DisplayedRowCount(False) - halfWay) <= oDgv.SelectedRows(0).Index Then
+            Dim targetRow As Integer = oDgv.SelectedRows(0).Index
+            targetRow = Math.Max(targetRow - halfWay, 0)
+            oDgv.FirstDisplayedScrollingRowIndex = targetRow
+        End If
+    End Sub

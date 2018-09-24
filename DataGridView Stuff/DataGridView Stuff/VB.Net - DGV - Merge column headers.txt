@@ -1,0 +1,78 @@
+    Private Sub dgv__load()
+        With dgv
+            .Columns.Add("JanWin", "Win")
+            .Columns.Add("JanLoss", "Loss")
+            .Columns.Add("FebWin", "Win")
+            .Columns.Add("FebLoss", "Loss")
+            .Columns.Add("MarWin", "Win")
+            .Columns.Add("MarLoss", "Loss")
+            .Columns.Add("AprWin", "Win")
+            .Columns.Add("AprLoss", "Loss")
+            .Columns.Add("MayWin", "Win")
+            .Columns.Add("MayLoss", "Loss")
+
+            For j As Integer = 0 To .ColumnCount - 1
+                .Columns(j).Width = 45
+            Next
+
+            .ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing
+            .ColumnHeadersHeight = .ColumnHeadersHeight * 2
+            .ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.BottomCenter
+            AddHandler .CellPainting, AddressOf dgv__CellPainting
+            AddHandler .Paint, AddressOf dgv__Paint
+            AddHandler .Scroll, AddressOf dgv__Scroll
+            AddHandler .ColumnWidthChanged, AddressOf dgv__ColumnWidthChanged
+        End With
+
+    End Sub
+
+    Private Sub dgv__ColumnWidthChanged(ByVal sender As Object, ByVal e As DataGridViewColumnEventArgs)
+        dgv.SuspendLayout()
+        DGV_Stretch_LastColumn(dgv)
+        Dim rtHeader As Rectangle = dgv.DisplayRectangle
+        rtHeader.Height = dgv.ColumnHeadersHeight / 2
+        dgv.Invalidate(rtHeader)
+        dgv.ResumeLayout()
+    End Sub
+
+    Private Sub dgv__Scroll(ByVal sender As Object, ByVal e As ScrollEventArgs)
+        dgv.SuspendLayout()
+        Dim rtHeader As Rectangle = dgv.DisplayRectangle
+        rtHeader.Height = dgv.ColumnHeadersHeight / 2
+        dgv.Invalidate(rtHeader)
+        dgv.ResumeLayout()
+    End Sub
+
+    Private Sub dgv__Paint(ByVal sender As Object, ByVal e As PaintEventArgs)
+        dgv.SuspendLayout()
+        Dim monthes As String() = {"January", "February", "March", "April", "May"}
+        Dim j As Integer = 0
+        While j < 10
+            Dim r1 As Rectangle = dgv.GetCellDisplayRectangle(j, -1, True)
+            Dim w2 As Integer = dgv.GetCellDisplayRectangle(j + 1, -1, True).Width
+            r1.X += 1
+            r1.Y += 1
+            r1.Width = r1.Width + w2 - 2
+            r1.Height = r1.Height / 2 - 2
+            e.Graphics.FillRectangle(New SolidBrush(dgv.ColumnHeadersDefaultCellStyle.BackColor), r1)
+            Dim format As New StringFormat()
+            format.Alignment = StringAlignment.Center
+            format.LineAlignment = StringAlignment.Center
+            e.Graphics.DrawString(monthes(j / 2), dgv.ColumnHeadersDefaultCellStyle.Font, New SolidBrush(dgv.ColumnHeadersDefaultCellStyle.ForeColor), r1, format)
+            j += 2
+        End While
+        dgv.ResumeLayout()
+    End Sub
+
+    Private Sub dgv__CellPainting(ByVal sender As Object, ByVal e As DataGridViewCellPaintingEventArgs)
+        If e.RowIndex = -1 AndAlso e.ColumnIndex > -1 Then
+            dgv.SuspendLayout()
+            Dim r2 As Rectangle = e.CellBounds
+            r2.Y += e.CellBounds.Height / 2
+            r2.Height = e.CellBounds.Height / 2
+            e.PaintBackground(r2, True)
+            e.PaintContent(r2)
+            e.Handled = True
+            dgv.ResumeLayout()
+        End If
+    End Sub

@@ -1,0 +1,9 @@
+        Dim cboColumn As DataGridViewComboBoxColumn = dgv.Columns(dgv.Columns("Location").Index)
+        Using dtLocations As New DataTable
+            DB_FillDataTable(dtLocations, SQLConn, "Select id,Location FROM Locations WHERE isActive=1")
+            If dtLocations.Rows.Count > 1 Then
+                For i As Integer = 0 To dtLocations.Rows.Count - 1
+                    cboColumn.Items.Add(dtLocations.Rows(i).Item(1) & " (" & dtLocations.Rows(i).Item(0) & ")")
+                Next
+            End If
+        End Using

@@ -1,0 +1,19 @@
+        With dgv
+            Select Case DT
+                Case 1
+                    .DataSource = DT_RefCodes 'datatable
+                Case 2
+                    .DataSource = DT_Batches	'datatable
+            End Select
+            If .Rows.Count > 0 Then
+                .Columns.Insert(1, New DataGridViewButtonColumn With {
+                    .HeaderText = "",
+                    .Name = "colEdit",
+                    .Text = "Edit",
+                    .UseColumnTextForButtonValue = True,
+                    .Width = 60,
+                    .Resizable = DataGridViewTriState.False})
+                DGV_Stretch_LastColumn(dgv)
+                .Columns(0).AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader
+            End If
+        End With

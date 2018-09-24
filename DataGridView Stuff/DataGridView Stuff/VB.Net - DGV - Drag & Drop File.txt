@@ -1,0 +1,16 @@
+    Private Sub DGV_DragDrop(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles DGV.DragDrop
+        If e.Data.GetDataPresent(DataFormats.FileDrop) Then
+            Dim MyFiles() As String = e.Data.GetData(DataFormats.FileDrop)
+
+            ' Loop through the array and add the files to the list.
+            If MyFiles.Length > 0 Then
+                For i as integer = 0 To MyFiles.Length - 1
+                    DGV.Rows.Add({True, Path.GetFileName(MyFiles(i)), MyFiles(i), 0})
+                Next
+            End If
+        End If
+    End Sub
+
+    Private Sub DGV_DragEnter(sender As Object, e As System.Windows.Forms.DragEventArgs) Handles DGV.DragEnter
+        If e.Data.GetDataPresent(DataFormats.FileDrop) Then e.Effect = DragDropEffects.All
+    End Sub

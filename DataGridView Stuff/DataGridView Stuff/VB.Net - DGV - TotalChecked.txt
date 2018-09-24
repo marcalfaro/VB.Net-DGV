@@ -1,0 +1,10 @@
+Public Function DGV_TotalChecked(ByVal WatDGV As DataGridView, ByVal CheckBoxColumnIndex As Integer) As Integer
+        Dim Rslt As Integer = 0
+        Dim j As Integer = WatDGV.Rows.Count
+        If j = 0 Then Return Rslt
+        j -= 1
+        For i As Integer = 0 To j
+            If CBool(WatDGV.Item(CheckBoxColumnIndex, i).Value) Then Rslt += 1
+        Next
+        Return Rslt
+End Function

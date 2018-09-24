@@ -1,0 +1,28 @@
+    Private Sub DGV_ExportCSV(ByVal watDGV As DataGridView, ByVal CSVfile As String, Optional ByVal IncludeColumns As Boolean = False)
+        If watDGV.Rows.Count > 1 And watDGV.Columns.Count > 1 Then
+            Dim strData As String = ""
+            If IncludeColumns Then
+                'Build Columns
+                For col As Integer = 0 To watDGV.Columns.Count - 1
+                    strData &= watDGV.Columns(col).HeaderText & ","
+                Next
+            End If
+            'Build Rows
+            For i As Integer = 0 To watDGV.Rows.Count - 1
+                strData &= vbNewLine
+                For col As Integer = 0 To watDGV.Columns.Count - 1
+                    strData &= watDGV(col, i).Value & ","
+                Next
+            Next
+            If CSVfile <> "" Then
+                Try
+                    System.IO.File.WriteAllText(CSVfile, strData)
+                    Shell("explorer /e," & CSVfile, AppWinStyle.NormalFocus)
+                Catch ex As Exception
+                    MsgBox(ex.Message, vbApplicationModal + vbExclamation, "Error")
+                End Try
+            End If
+        Else
+            MsgBox("No Data to Export.", vbApplicationModal + vbExclamation, "Error")
+        End If
+    End Sub

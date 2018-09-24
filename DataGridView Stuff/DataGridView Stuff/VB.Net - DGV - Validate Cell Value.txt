@@ -1,0 +1,34 @@
+    Private Sub ItemizeRowHeaders()
+        With dgv
+            .SuspendLayout()
+            For i As Integer = 0 To .Rows.Count - 1
+                .Rows(i).HeaderCell.Value = (i + 1).ToString
+            Next
+            .ResumeLayout()
+        End With
+    End Sub
+
+    Private Sub dgv_CellValidating(sender As Object, e As DataGridViewCellValidatingEventArgs) Handles dgv.CellValidating
+        If e.ColumnIndex = 0 Or e.ColumnIndex = 1 Then
+            Dim newval As String = e.FormattedValue.ToString.Replace(":", "")
+            If newval <> String.Empty Then
+                If Not IsNumeric(newval) Then
+                    e.Cancel = True
+                Else
+                    If CInt(newval) < 0 Or CInt(newval) > 2400 Then
+                        e.Cancel = True
+                        MsgBox("Time Block Range should be between 0000 - 2400", vbApplicationModal + vbExclamation, "Invalid Value")
+                    End If
+                End If
+            End If
+        End If
+    End Sub
+
+    Private Sub dgv_CellValidated(sender As Object, e As DataGridViewCellEventArgs) Handles dgv.CellValidated
+        If e.ColumnIndex = 0 Or e.ColumnIndex = 1 Then
+            If Not String.IsNullOrWhiteSpace(dgv.Rows(e.RowIndex).Cells(e.ColumnIndex).Value) Then
+                Dim hhhh As Integer = CInt(dgv.Rows(e.RowIndex).Cells(e.ColumnIndex).Value.ToString.Replace(":", ""))
+                dgv.Rows(e.RowIndex).Cells(e.ColumnIndex).Value = hhhh.ToString("00:00")
+            End If
+        End If
+    End Sub

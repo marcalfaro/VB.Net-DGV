@@ -1,0 +1,8 @@
+    Private Sub dgv_KeyDown(sender As Object, e As KeyEventArgs) Handles dgvHospital.KeyDown, dgvAnnual.KeyDown, dgvMedical.KeyDown
+        If e.KeyCode = Keys.Delete Then
+            Dim oDGV As DataGridView = CType(sender, DataGridView)
+            For Each sCell As DataGridViewCell In oDGV.SelectedCells
+                If Not sCell.ReadOnly Then sCell.Value = ""
+            Next
+        End If
+    End Sub

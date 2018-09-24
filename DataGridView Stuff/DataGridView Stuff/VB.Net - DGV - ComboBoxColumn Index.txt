@@ -1,0 +1,6 @@
+'Get the index & Text value of the current combo selection in a datagridview
+Dim myComboBoxCell As DataGridViewComboBoxCell = DirectCast(dgvAdd.Item(column, row), DataGridViewComboBoxCell)
+Dim mText As String = MyComboBoxCell.Value
+Dim SelectedIndex As Integer = myComboBoxCell.Items.IndexOf(myComboBoxCell.Value)
+
+

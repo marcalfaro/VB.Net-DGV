@@ -1,0 +1,36 @@
+Option Explicit On
+Imports System.Reflection
+
+    Private Sub f_DGV_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        DGV_DoubleBuffer(dgv)
+        DGVAddListener(dgv)
+    End Sub
+
+    Public Function DGVAddListener(dataGridView As DataGridView) As Boolean
+        'Dim pInfo As PropertyInfo = dataGridView.GetType.GetProperty("VerticalScrollBar", BindingFlags.Instance Or BindingFlags.NonPublic)
+        Dim pInfo As PropertyInfo = dataGridView.GetType.GetProperty("HorizontalScrollBar", BindingFlags.Instance Or BindingFlags.NonPublic)
+        If pInfo Is Nothing Then Return False
+        Dim dgvScrollBar As ScrollBar = CType(pInfo.GetValue(dataGridView, Nothing), ScrollBar)
+        If dgvScrollBar Is Nothing Then Return False
+        AddHandler dgvScrollBar.Scroll, New ScrollEventHandler(AddressOf dgv__Scroll)
+        Return True
+    End Function
+
+    Private Sub dgv__Scroll(ByVal sender As Object, ByVal e As ScrollEventArgs)
+        Select Case e.Type
+            Case ScrollEventType.EndScroll
+                'MsgBox("Scroll End!")
+                dgv.Refresh()
+
+            Case ScrollEventType.First
+            Case ScrollEventType.LargeDecrement
+            Case ScrollEventType.LargeIncrement
+            Case ScrollEventType.Last
+            Case ScrollEventType.SmallDecrement
+            Case ScrollEventType.SmallIncrement
+            Case ScrollEventType.ThumbPosition
+            Case ScrollEventType.ThumbTrack
+        End Select
+
+        dgv.PerformLayout()
+    End Sub

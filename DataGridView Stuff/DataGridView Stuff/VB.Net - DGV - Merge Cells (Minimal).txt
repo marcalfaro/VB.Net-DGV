@@ -1,0 +1,17 @@
+        If e.ColumnIndex = 0 AndAlso dgv.Rows.Count >= 2 Then
+            'Is the value of the next row the same
+            If e.RowIndex + 1 < dgv.Rows.Count Then
+                If e.Value = dgv.Rows(e.RowIndex + 1).Cells(e.ColumnIndex).Value Then
+                    e.AdvancedBorderStyle.Bottom = DataGridViewAdvancedCellBorderStyle.None
+                End If
+            End If
+
+            'Is the previous column cell value the same
+            If e.RowIndex >= 1 Then
+                If e.Value = dgv.Rows(e.RowIndex - 1).Cells(e.ColumnIndex).Value Then
+                    e.Graphics.FillRectangle(New SolidBrush(e.CellStyle.BackColor), e.CellBounds)
+                    e.PaintBackground(e.CellBounds, False)
+                    e.Handled = True
+                End If
+            End If
+        End If

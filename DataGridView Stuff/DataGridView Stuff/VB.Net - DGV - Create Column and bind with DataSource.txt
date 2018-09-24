@@ -1,0 +1,11 @@
+        With dgvPNs
+            .DataSource = Nothing
+            .Rows.Clear()
+            With .Columns
+                .Clear()
+                .Add(New DataGridViewTextBoxColumn With {.Name = "sn", .HeaderText = "sn", .DataPropertyName = "sn"})
+                .Add(New DataGridViewButtonColumn With {.Name = "Delete", .HeaderText = "Delete", .DataPropertyName = "Delete"})
+                .Add(New DataGridViewTextBoxColumn With {.Name = "PN", .HeaderText = "PN", .DataPropertyName = "PN"})
+            End With
+            .DataSource = dt
+        End With

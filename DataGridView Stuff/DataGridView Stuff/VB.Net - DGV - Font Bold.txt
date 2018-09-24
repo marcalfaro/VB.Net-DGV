@@ -1,0 +1,22 @@
+                                dgvResults.Rows(r).Cells("Req. QTY").Style.ForeColor = Color.Green
+                                'dgvResults.Rows(r).Cells("Req. QTY").Style.Font = New Font(DataGridView.DefaultFont, FontStyle.Bold)
+
+				dgvResults.Rows(r).Cells("Req. QTY").Style.Font = New Font(DataGridView.Font, FontStyle.Bold)
++++
+
+
+Private Sub dgvClsJoin_CurrentCellDirtyStateChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles DataGridView1.CurrentCellDirtyStateChanged
+       Try
+           If (DataGridView1.IsCurrentCellDirty) Then
+               DataGridView1.CommitEdit(DataGridViewDataErrorContexts.Commit)
+                If DataGridView1.CurrentCell.Value <> 0 Then 'your condition
+                                         If DataGridView1.CurrentCell.Value = 1 Then
+                           DataGridView1.CurrentCell.Style.Font = New Font("Arial", 12, FontStyle.Bold)
+                       End If
+                  End If
+           End If
+       Catch
+       End Try
+   End Sub
+
++++

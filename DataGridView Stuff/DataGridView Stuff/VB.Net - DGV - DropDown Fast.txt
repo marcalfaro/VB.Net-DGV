@@ -1,0 +1,18 @@
+    Private Sub dgvIU_CellClick(sender As Object, e As System.Windows.Forms.DataGridViewCellEventArgs) Handles dgvIU.CellClick
+	    If e.RowIndex < 0 Then Exit Sub
+            If dgvIU.Columns(e.ColumnIndex).GetType Is GetType(DataGridViewComboBoxColumn) Then
+                dgvIU.Rows(e.RowIndex).Cells(e.ColumnIndex).Selected = True
+                dgvIU.BeginEdit(True)
+                DirectCast(dgvIU.EditingControl, DataGridViewComboBoxEditingControl).DroppedDown = True
+            End If
+
+' or:
+	If e.RowIndex < 0 Then Exit Sub
+	If CType(sender, DataGridView).Columns(e.ColumnIndex).GetType Is GetType(DataGridViewComboBoxColumn) Then
+            CType(sender, DataGridView).Rows(e.RowIndex).Cells(e.ColumnIndex).Selected = True
+            CType(sender, DataGridView).BeginEdit(True)
+            DirectCast(CType(sender, DataGridView).EditingControl, DataGridViewComboBoxEditingControl).DroppedDown = True
+        End If
+
+
+    End Sub

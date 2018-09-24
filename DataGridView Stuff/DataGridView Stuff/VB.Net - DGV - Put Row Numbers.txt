@@ -1,0 +1,8 @@
+    Public Sub DGV_PutRowNumbers(ByVal dgv As DataGridView,  Optional ByVal ColIndex As Integer = 0)
+        Dim j As Integer = dgv.Rows.Count
+        If j = 0 Then Exit Sub
+        j -= 1
+        For i As Integer = 0 To j
+            dgv.Item(ColIndex, i).Value = i + 1
+        Next
+    End Sub

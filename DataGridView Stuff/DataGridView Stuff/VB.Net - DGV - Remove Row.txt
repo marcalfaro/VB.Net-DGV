@@ -1,0 +1,9 @@
+    Private Sub dgv_Delete_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvGrayList.CellContentClick, dgvQtyM.CellContentClick, dgvDesc.CellContentClick
+        Dim oDGV As DataGridView = sender
+        If TypeOf oDGV.Columns(e.ColumnIndex) Is DataGridViewButtonColumn Then
+            Select Case oDGV(e.ColumnIndex, e.RowIndex).Value
+                Case "Delete"
+                    oDGV.Rows.Remove(oDGV.Rows(e.RowIndex))
+            End Select
+        End If
+    End Sub

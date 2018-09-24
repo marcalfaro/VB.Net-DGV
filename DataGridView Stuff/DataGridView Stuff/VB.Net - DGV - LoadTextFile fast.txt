@@ -1,0 +1,38 @@
+    Private Sub LoadTextFileData()
+        Dim iniDir As String = Application.StartupPath
+        Dim oldDir As String = _INIGetString(CONFIG_FILE, "SurveyDataFile", "Path", iniDir)
+        If File.Exists(oldDir) Then iniDir = oldDir
+
+        Dim tfile As String = FILEDIALOG_OPEN(iniDir)
+        If tfile <> "" Then
+            _INIWriteString(CONFIG_FILE, "SurveyDataFile", "Path", tfile)
+            Cursor = Cursors.WaitCursor
+            Try
+
+                Text = "Loading data... Please wait"
+                Enabled = False
+
+                dgvSurveyData.SuspendLayout()
+
+                Dim dStreamReader As New System.IO.StreamReader(tfile)
+                Dim linereadingnow As String
+                Dim inforeadingnow As Array
+                Do Until dStreamReader.EndOfStream = True
+                    linereadingnow = dStreamReader.ReadLine
+                    inforeadingnow = linereadingnow.Split(",")
+                    dgvSurveyData.Rows.Add(New String() {"", inforeadingnow(0), inforeadingnow(1), inforeadingnow(2), inforeadingnow(3)})
+                Loop
+
+                dgvSurveyData.ResumeLayout()
+                DGV_Stretch_LastColumn(dgvSurveyData)
+
+                Enabled = True
+                Text = "Raw Survey Data"
+
+            Catch ex As Exception
+                MsgBox(ex.Message, vbApplicationModal + vbExclamation, "Error loading")
+            End Try
+            Cursor = Cursors.Default
+
+        End If
+    End Sub

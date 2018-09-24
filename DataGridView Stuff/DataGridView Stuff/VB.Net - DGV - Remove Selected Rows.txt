@@ -1,0 +1,110 @@
+Multi CellSelect (RowHeader Visible)
+                With dgvConfig
+                    Dim j As Integer = .Rows.Count
+                    If j > 0 Then
+                        Dim s As Integer = .SelectedRows.Count
+                        If s > 0 Then
+                            If MsgBox("Remove selected rule/s?", vbApplicationModal + vbYesNo, "Remove Rule") = vbYes Then
+                                For Each R As DataGridViewRow In .SelectedRows
+                                    .Rows.Remove(R)
+                                Next
+                                AutoNumberDataGridRows(dgvConfig)
+                            End If
+                        End If
+                    End If
+                End With
+
+===========
+Multi CellSelect (RowHeader Invisible)
+
+        If e.KeyCode = 46 Then DeleteSelectedRow
+
+    Private Sub DeleteSelectedRow()
+        Dim oDGV As DataGridView = dgvEmployeeList
+        If oDGV.Rows.Count > 0 Then
+            Dim idx As New ArrayList
+            For i As Integer = 0 To oDGV.Rows.Count - 1
+                If oDGV(0, i).Selected Or oDGV(1, i).Selected Or oDGV(2, i).Selected Or oDGV(3, i).Selected Or oDGV(4, i).Selected Then
+                    idx.Add(i)
+                End If
+            Next
+            For i As Integer = idx.Count - 1 To 0 Step -1
+                oDGV.Rows.Remove(oDGV.Rows(idx(i)))
+            Next
+            DGV_PutRowNumbers(oDGV)
+        End If
+    End Sub
+
+version 2:
+    Private Sub DeleteSelectedRow()
+        Dim oDGV As DataGridView = dgv
+        If oDGV.Rows.Count > 0 Then
+            Dim idx As New ArrayList
+            For i As Integer = 0 To oDGV.Rows.Count - 1
+                If oDGV(0, i).Selected Or oDGV(1, i).Selected Or oDGV(2, i).Selected Or oDGV(3, i).Selected Or oDGV(4, i).Selected Then
+                    idx.Add(oDGV.Rows(i))
+                End If
+            Next
+            For i As Integer = idx.Count - 1 To 0 Step -1
+                Dim rDGV As DataGridViewRow= CType(idx(i), DataGridViewRow)
+                'MsgBox(rDGV.Tag)
+                Dim RecID As String = rDGV.Tag
+                If IsNumeric(RecID) Then
+                    Dim sqlDel As String = "DELETE FROM " & RecordsMode.dbTable & " WHERE [id]=" & RecID
+                    'MsgBox(sqlDel)
+                    Dim Err As String = DB_EXECUTE_NONQUERY(SQLConn, sqlDel)
+                    If Err = "" Then oDGV.Rows.Remove(rDGV)
+                End If
+            Next
+            DGV_PutRowNumbers(oDGV)
+        End If
+    End Sub
+===========
+CellSelect (RowHeader Invisible)
+
+                If dgvStaff.Rows.Count > 0 Then
+                    Dim CurrRowIndex As Integer = dgvStaff.CurrentRow.Index
+                    Dim CurrCell As DataGridViewCell = dgvStaff.CurrentCell
+                    Dim CurrRow As DataGridViewRow = dgvStaff.Rows(dgvStaff.CurrentCell.RowIndex)
+
+                    dgvStaff.FirstDisplayedScrollingRowIndex = CurrRowIndex
+                    dgvStaff.Rows(CurrRowIndex).Selected = True
+
+                    If MsgBox("Are you sure you want to delete the selected row?", vbApplicationModal + vbQuestion + vbYesNo, "Remove Row") = vbYes Then
+                        dgvStaff.Rows.Remove(CurrRow)
+                    Else
+                        dgvStaff.Rows(CurrRowIndex).Selected = False
+                        dgvStaff.CurrentCell = CurrCell
+                        dgvStaff.CurrentCell.Selected = True
+                    End If
+
+                End If
+
+
+===========================
+
+CellSelect with no RowHeader
+
+        If e.KeyCode = 46 Then
+            Dim oDGV As DataGridView = CType(sender, DataGridView)
+            If oDGV.Rows.Count > 0 Then
+                Dim idx As New ArrayList
+                For i As Integer = 0 To oDGV.Rows.Count - 1
+                    If oDGV.Name = dgv.Name Then
+                        If oDGV(0, i).Selected Or oDGV(1, i).Selected Or oDGV(2, i).Selected Or oDGV(3, i).Selected Or oDGV(4, i).Selected Or oDGV(5, i).Selected Then
+                            idx.Add(i)
+                        End If
+                    Else
+                        If oDGV(0, i).Selected Or oDGV(1, i).Selected Or oDGV(2, i).Selected Then
+                            idx.Add(i)
+                        End If
+                    End If
+                Next
+
+                For i As Integer = idx.Count - 1 To 0 Step -1
+                    oDGV.Rows.Remove(oDGV.Rows(idx(i)))
+                Next
+
+                DGV_PutRowNumbers(oDGV)
+            End If
+        End If

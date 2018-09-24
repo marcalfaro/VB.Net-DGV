@@ -1,0 +1,24 @@
+    Private Sub PasteFromExcelClipBoardToDGV()
+        Try
+            Dim colNum As Integer = 0
+            Dim copiedText As String() = Clipboard.GetText.Split(vbNewLine)
+            If copiedText.Length > 0 Then
+                colNum = copiedText(0).Split(vbTab).Count
+
+                dgvPNs.Rows.Clear()
+                dgvPNs.Columns.Clear()
+
+                For c As Integer = 1 To colNum
+                    dgvPNs.Columns.Add("Column" & c, "Column" & c)
+                Next
+
+                For Each line As String In Clipboard.GetText.Split(vbNewLine)
+                    Dim item() As String = line.Trim.Split(vbTab)
+                    dgvPNs.Rows.Add(item)
+                Next
+
+            End If
+        Catch ex As Exception
+            MsgBox(ex.Message, vbApplicationModal + vbExclamation, "Oops!")
+        End Try
+    End Sub

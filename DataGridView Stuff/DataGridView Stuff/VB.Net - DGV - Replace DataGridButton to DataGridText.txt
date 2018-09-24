@@ -1,0 +1,9 @@
+        For i As Integer = 0 To dgv.Rows.Count - 1
+            dgv(5, i).Value = CInt(dgv(1, i).Value) Mod 2   'odd or even number
+            If CInt(dgv(1, i).Value) Mod 2 = 0 Then  'some condition inside parentheses
+                Dim text As New DataGridViewTextBoxCell()
+                text.Value = "some text"
+                'while X and Y are column and row indexes
+                dgv(7, i) = text
+            End If
+        Next

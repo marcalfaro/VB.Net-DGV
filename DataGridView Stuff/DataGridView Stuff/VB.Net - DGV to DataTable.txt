@@ -1,0 +1,12 @@
+        Dim DT As New DataTable()
+        For Each col As DataGridViewColumn In dgvPreview.Columns
+            DT.Columns.Add(col.Name, GetType(String))
+            DT.Columns(col.Name).Caption = col.HeaderText
+        Next
+        For Each row As DataGridViewRow In dgvPreview.Rows
+            Dim drNewRow As DataRow = DT.NewRow()
+            For Each col As DataColumn In DT.Columns
+                drNewRow(col.ColumnName) = row.Cells(col.ColumnName).Value
+            Next
+            DT.Rows.Add(drNewRow)
+        Next

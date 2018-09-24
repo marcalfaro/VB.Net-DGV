@@ -1,0 +1,6 @@
+    Public Sub DGV_DoubleBuffer(ByVal DGV As DataGridView)
+        Try
+            DGV.GetType.InvokeMember("DoubleBuffered", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance Or System.Reflection.BindingFlags.SetProperty, Nothing, DGV, New Object() {True})
+        Catch ex As Exception
+            Debug.Print(ex.Message)
+        End Try    End Sub

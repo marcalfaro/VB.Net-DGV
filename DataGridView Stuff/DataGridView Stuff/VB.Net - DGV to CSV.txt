@@ -1,0 +1,43 @@
+﻿        If dgv.Rows.Count > 1 Then
+            If Trim(cboStaff.Text) = "" And Not cbAll.Checked Then
+                MsgBox("Please select Staff Name.", vbApplicationModal + vbExclamation, "Error")
+            Else
+                Dim strData As String = ""
+                If cbAll.Checked Then
+                    strData = "All Staff"
+                Else
+                    strData = Trim(cboStaff.Text)
+                End If
+
+                strData &= vbNewLine & vbNewLine
+                For col As Integer = 0 To dgv.Columns.Count - 1
+                    strData &= dgv.Columns(col).HeaderText & ","
+                Next
+
+
+                For i As Integer = 0 To dgv.Rows.Count - 1
+                    strData &= vbNewLine
+                    For col As Integer = 0 To dgv.Columns.Count - 1
+                        strData &= dgv(col, i).Value & ","
+                    Next
+
+                Next
+
+                If Trim(strData) = "" Then
+                    GoTo nodata
+                Else
+                    Dim csvFile As String = FILEDIALOG_SAVE()
+                    If csvFile <> "" Then
+                        Try
+                            System.IO.File.WriteAllText(csvFile, strData)
+                            Shell("explorer /e," & csvFile, AppWinStyle.NormalFocus)
+                        Catch ex As Exception
+                        End Try
+                    End If
+                End If
+
+            End If
+        Else
+nodata:
+            MsgBox("No Data to Export.", vbApplicationModal + vbExclamation, "Error")
+        End If

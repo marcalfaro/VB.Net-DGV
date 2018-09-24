@@ -1,0 +1,40 @@
+    Public Sub DGV_Stretch_LastColumn(ByVal DGV As DataGridView, Optional ByVal LastColMinWidth As Integer = 50)
+        If DGV.Columns.Count <= 0 Then Exit Sub
+        Try
+            DGV.SuspendLayout()
+            Dim lastCol_Index As Integer = DGV.Columns.Count - 1
+
+            Dim restCols_W As Integer = 0
+            For i As Integer = 0 To lastCol_Index - 1
+                restCols_W += DGV.Columns(i).Width
+            Next
+
+            Dim lastCol_NewWidth As Integer = (DGV.Width - 3) - restCols_W
+            If lastCol_NewWidth <= 0 Then lastCol_NewWidth = 0
+
+            Dim vertScrollBarWidth As Integer = SystemInformation.VerticalScrollBarWidth
+            Dim DGVVerticalScroll As VScrollBar = Nothing
+            For Each c As Control In DGV.Controls
+                If TypeOf c Is VScrollBar Then
+                    DGVVerticalScroll = DirectCast(c, VScrollBar)
+                    Exit For
+                End If
+            Next
+            If DGVVerticalScroll IsNot Nothing Then
+                If DGVVerticalScroll.Visible Then lastCol_NewWidth -= vertScrollBarWidth
+            End If
+            If DGV.RowHeadersVisible Then
+                lastCol_NewWidth -= DGV.RowHeadersWidth
+            End If
+
+            If lastCol_NewWidth < LastColMinWidth Then
+                DGV.Columns(lastCol_Index).Width = LastColMinWidth
+            Else
+                DGV.Columns(lastCol_Index).Width = lastCol_NewWidth
+            End If
+
+            DGV.ResumeLayout()
+        Catch ex As Exception
+            Debug.Print(ex.Message)
+        End Try
+    End Sub

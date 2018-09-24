@@ -1,0 +1,29 @@
+            If TypeOf dgv.Columns(e.ColumnIndex) Is DataGridViewButtonColumn Then
+                Select Case dgv(e.ColumnIndex, e.RowIndex).Value
+                    Case "View"
+                        If Not IsNumeric(dgv(1, e.RowIndex).Value) Then
+                            MsgBox("Unrecognized CarparkID.", vbApplicationModal + vbExclamation, "Error")
+                        Else
+                            If Not HasAccess(2) Then Exit Sub
+                            OpenCarparkProfile(dgv(1, e.RowIndex).Value, dgv(2, e.RowIndex).Value)
+                        End If
+                    Case "Delete"
+                        If Not HasAccess(3) Then Exit Sub
+                        If MsgBox("Are you sure you want to delete this carpark?" & vbNewLine & "(Warning: This action cannot be undone)", vbApplicationModal + vbQuestion + vbYesNo, "Delete Carpark") = vbNo Then Exit Sub
+                        If DELETE_RECORD("Carparks", "ID", dgv(1, e.RowIndex).Value) Then
+                            dgv.Rows.Remove(dgv.Rows(e.RowIndex))
+                        End If
+                End Select
+            End If
+
+++++
+
+    Private Sub dgv_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgv.CellContentClick
+        If TypeOf dgv.Columns(e.ColumnIndex) Is DataGridViewButtonColumn Then
+            Select Case dgv(e.ColumnIndex, e.RowIndex).Value
+                Case "Delete"
+                    If MsgBox("Are you sure you want to delete this record?", vbApplicationModal + vbQuestion + vbYesNo, "Delete") = vbNo Then Exit Sub
+                    dgv.Rows.Remove(dgv.Rows(e.RowIndex))
+            End Select
+        End If
+    End Sub

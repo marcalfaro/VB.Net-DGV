@@ -1,0 +1,5 @@
+        Dim comboBoxCell As New DataGridViewComboBoxCell
+        comboBoxCell.Items.Add("111")
+        comboBoxCell.Items.Add("222")
+        comboBoxCell.Items.Add("3")
+        dgv(1, 2) = comboBoxCell

@@ -1,0 +1,86 @@
+Public Class Form2
+    Dim mdtbColourMap As DataTable = Nothing
+
+    Private Sub Form2_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        '----Following should be replaced with your data access
+        With dgv
+            .Columns.Add("Column1", "Column1")
+            .Columns.Add("Column2", "Column2")
+            .Columns.Add("Column3", "Column3")
+            .Rows.Add("Welcome to_ the", "Wonderful-", "World of computing_")
+            .Rows.Add("This_ is what+ I", "Want-", "In My_ laptop")
+            .Rows.Add("X_is always+", "Greater-", "Than_ y")
+            .Columns(0).Width = 120
+            .Columns(1).Width = 120
+            .Columns(2).Width = 120
+        End With
+        '----Above should be replaced with your data access
+
+        'Define the search terms and color for each
+        mdtbColourMap = New DataTable
+        mdtbColourMap.Columns.Add(New DataColumn("SearchTerm", GetType(String)))
+        mdtbColourMap.Columns.Add(New DataColumn("TextColor", GetType(Brush)))
+        mdtbColourMap.Rows.Add("_", Drawing.Brushes.Green)
+        mdtbColourMap.Rows.Add("+", Drawing.Brushes.Red)
+        mdtbColourMap.Rows.Add("-", Drawing.Brushes.Purple)
+    End Sub
+
+    Private Sub dgv_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgv.CellContentClick
+
+    End Sub
+
+    Private Sub dgv_CellPainting(sender As Object, e As DataGridViewCellPaintingEventArgs) Handles dgv.CellPainting
+        If e.ColumnIndex >= 0 And e.RowIndex >= 0 Then
+            Dim newRect As New Rectangle(e.CellBounds.X + 1, e.CellBounds.Y + 1, e.CellBounds.Width - 4, e.CellBounds.Height - 4)
+            Dim backColorBrush As New SolidBrush(e.CellStyle.BackColor)
+            Dim gridBrush As New SolidBrush(dgv.GridColor)
+            Dim gridLinePen As New Pen(gridBrush)
+            Try
+                ' Erase the cell.
+                e.Graphics.FillRectangle(backColorBrush, e.CellBounds)
+
+                '' Draw the grid lines (only the right and bottom lines; DataGridView takes care of the others).
+                e.Graphics.DrawLine(gridLinePen, e.CellBounds.Left, e.CellBounds.Bottom - 1, e.CellBounds.Right - 1, e.CellBounds.Bottom - 1)
+                e.Graphics.DrawLine(gridLinePen, e.CellBounds.Right - 1, e.CellBounds.Top, e.CellBounds.Right - 1, e.CellBounds.Bottom)
+
+                '' Draw the inset highlight box.
+                'e.Graphics.DrawRectangle(Pens.Blue, newRect)
+
+                ' Draw the text content of the cell, ignoring alignment. 
+                If (e.Value IsNot Nothing) Then
+                    Dim strValue As String = CStr(e.Value)
+                    Dim strWords() As String = Split(strValue, " ")
+                    Dim strAlignment As String = "LEFT"
+                    If e.ColumnIndex = 0 Then strAlignment = "RIGHT"
+                    Dim sngX As Integer
+                    If strAlignment = "LEFT" Then
+                        sngX = e.CellBounds.X + 2
+                    Else
+                        sngX = e.CellBounds.Right - 4 - e.Graphics.MeasureString(strValue, e.CellStyle.Font).Width
+                    End If
+                    For i As Integer = 0 To strWords.GetUpperBound(0)
+                        Dim brsTextColor As Drawing.Brush = Nothing
+                        For j As Integer = 0 To mdtbColourMap.Rows.Count - 1
+                            Dim strSearchTerm As String = mdtbColourMap.Rows(j).Item("SearchTerm").ToString
+                            If InStr(strWords(i), strSearchTerm) > 0 Then
+                                brsTextColor = DirectCast(mdtbColourMap.Rows(j).Item("TextColor"), Drawing.Brush) 'change the color
+                                Exit For
+                            End If
+                        Next j
+                        If brsTextColor Is Nothing Then
+                            brsTextColor = Brushes.Black 'default
+                        End If
+                        e.Graphics.DrawString(strWords(i), e.CellStyle.Font, brsTextColor, sngX, e.CellBounds.Y + 2, StringFormat.GenericDefault)
+                        sngX += e.Graphics.MeasureString(strWords(i), e.CellStyle.Font).Width
+                    Next i
+                End If
+                e.Handled = True
+            Finally
+                gridLinePen.Dispose()
+                gridBrush.Dispose()
+                backColorBrush.Dispose()
+            End Try
+
+        End If
+    End Sub
+End Class

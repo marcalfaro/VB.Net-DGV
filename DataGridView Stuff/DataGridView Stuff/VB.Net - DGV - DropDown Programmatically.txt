@@ -1,0 +1,7 @@
+Try
+   dgvIU.CurrentCell = dgvIU.Item(7, ctr)
+   dgvIU.BeginEdit(True)
+   DirectCast(dgvIU.EditingControl, DataGridViewComboBoxEditingControl).DroppedDown = True
+Catch ex As Exception
+
+End Try
